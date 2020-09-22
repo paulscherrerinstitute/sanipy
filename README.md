@@ -10,11 +10,11 @@ The `data` folder contains some channel lists and output files for testing.
 ## check
 
 `./sani.py check data/test_chans_good.txt`
-
-<img src="docs/check_good.png" width="491"> \
+<br>
+<img src="docs/check_good.png" width="491">
 
 `./sani.py check data/test_chans_bad.txt`
-
+<br>
 <img src="docs/check_bad.png" width="491">
 
 Successful connections will be marked in green, failed connection in red, and alarm states will be printed in yellow.
@@ -23,11 +23,11 @@ Successful connections will be marked in green, failed connection in red, and al
 ## compare
 
 `./sani.py compare data/test1.csv data/test4 -v`
-
-<img src="docs/compare_good.png" width="568"> \
+<br>
+<img src="docs/compare_good.png" width="568">
 
 `./sani.py compare data/test1.csv data/test3`
-
+<br>
 <img src="docs/compare_bad.png" width="658">
 
 Entries that are identical in both files will not be shown. Differences will be printed as `LEFT | RIGHT`.
