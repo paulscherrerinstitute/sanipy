@@ -6,6 +6,7 @@ It has two commands ([check](#check) and [compare](#compare)) and a few option s
 
 The `data` folder contains some channel lists and output files for testing.
 
+
 ## check
 
 `./sani.py check data/test_chans_good.txt`
@@ -15,6 +16,8 @@ The `data` folder contains some channel lists and output files for testing.
 `./sani.py check data/test_chans_bad.txt`
 
 <img src="docs/check_bad.png" width="491">
+
+Successful connections will be marked in green, failed connection in red, and alarm states will be printed in yellow.
 
 
 ## compare
@@ -27,4 +30,7 @@ The `data` folder contains some channel lists and output files for testing.
 
 <img src="docs/compare_bad.png" width="658">
 
-(Note here that `.csv` is automatically appended if missing.)
+Entries that are identical in both files will not be shown. Differences will be printed as `LEFT | RIGHT`.
+
+(Note that `.csv` is automatically appended to filenames if missing.)
+
