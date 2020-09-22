@@ -10,7 +10,7 @@ The `data` folder contains some channel lists and output files for testing.
 
 `./sani.py check data/test_chans_good.txt`
 
-<img src="docs/check_good.png" width="491">
+<img src="docs/check_good.png" width="491"> \
 
 `./sani.py check data/test_chans_bad.txt`
 
@@ -21,7 +21,7 @@ The `data` folder contains some channel lists and output files for testing.
 
 `./sani.py compare data/test1.csv data/test4 -v`
 
-<img src="docs/compare_good.png" width="568">
+<img src="docs/compare_good.png" width="568"> \
 
 `./sani.py compare data/test1.csv data/test3`
 
