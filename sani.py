@@ -1,177 +1,54 @@
 #!/usr/bin/env python
 
-
 import argparse
 
-parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser()
+subparsers = parser.add_subparsers(title="command", description="valid commands", dest="command", help="commands")
 
-parser.add_argument("filename")
+parser_check = subparsers.add_parser("check", help="check!", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser_check.add_argument("filename", help="name of input channel-list file")
+parser_check.add_argument("-o", "--output", help="output CSV file", default=None)
+parser_check.add_argument("-s", "--silent", help="do not show each channel's answer", action="store_true")
+parser_check.add_argument("-t", "--timeout", help="connection timeout in seconds", type=float, default=1)
 
-#parser.add_argument("-v", "--verbose", action="count", default=0)
-parser.add_argument("-s", "--show", action="store_true")
-parser.add_argument("-t", "--timeout", type=float, default=2)
+parser_compare = subparsers.add_parser("compare", help="compare!")
+parser_compare.add_argument("filenames", metavar="filename", nargs=2, help="name of input CSV file, two are needed")
+parser_compare.add_argument("-v", "--ignore-values", help="do not check values", action="store_true")
 
 clargs = parser.parse_args()
 
+if not clargs.command:
+    parser.print_help()
+    raise SystemExit
 
 
 
-
-
-
-
-import enum
-
+from datetime import datetime
 import epics
+import numpy as np
 import pandas as pd
+from colorama import Fore, Style
 
-from pvcollection import PVCollection
 from alarms import message
 from config import load
 from execute import parallel
-
-
-
-
-
-
-
-
-
-
+#from execute import serial as parallel
 
 
 MSG_NOT_CONNECTED = "did not connect"
 MSG_SUCCESS = "OK"
 
+SYM_GOOD = "👍"
+SYM_BAD = "💔"
 
+COL_NOT_CONNECTED = Fore.RED
+COL_SUCCESS = Fore.GREEN
+COL_ALARM = Fore.YELLOW
 
-def v1a():
-    cs = load(clargs.filename)
-    pvs = [epics.PV(c) for c in cs]
-    for pv in pvs:
-        c = pv.pvname
-        connected = pv.wait_for_connection(clargs.timeout)
-        if not connected:
-            msg = MSG_NOT_CONNECTED
-        elif pv.status != 0 or pv.severity != 0:
-            msg = message(pv.status, pv.severity)
-        else:
-            if not clargs.show:
-                continue
-            msg = MSG_SUCCESS
-#        print(c, msg)
+#COL_COMP_LEFT = Fore.MAGENTA
+#COL_COMP_LEFT = Fore.CYAN
 
-
-def v1b():
-    chans = load(clargs.filename)
-    pvs = [epics.PV(ch) for ch in chans]
-    connected = parallel(lambda pv: pv.wait_for_connection(clargs.timeout), pvs)
-
-    for ch, pv, con in zip(chans, pvs, connected):
-        if not con:
-            msg = MSG_NOT_CONNECTED
-        elif pv.status != 0 or pv.severity != 0:
-            msg = message(pv.status, pv.severity)
-        else:
-            if not clargs.show:
-                continue
-            msg = MSG_SUCCESS
-#        print(ch, msg)
-
-
-
-
-
-def v1c():
-    chans = load(clargs.filename)
-    length = maxstrlen(chans)
-    pvs = [epics.PV(ch) for ch in chans]
-    connected = parallel(lambda pv: pv.wait_for_connection(clargs.timeout), pvs)
-
-    data = {}
-    for ch, pv, con in zip(chans, pvs, connected):
-        if not con:
-            status = severity = -1
-            value = None
-            msg = MSG_NOT_CONNECTED
-        else:
-            status = pv.status
-            severity = pv.severity
-            if status == 0 and severity == 0:
-                if not clargs.show:
-                    continue
-                msg = MSG_SUCCESS
-            else:
-                msg = message(status, severity)
-            value = pv.value
-
-#        print(ch.ljust(length), msg)
-        data[ch] = (con, status, severity, value)
-
-    columns = ("connected", "status", "severity", "value")
-    df = pd.DataFrame.from_dict(data, columns=columns, orient="index")
-#    print()
-#    print(df)
-#    print()
-#    print(df.dtypes)
-
-
-
-def maxstrlen(seq):
-    return max(strlen(i) for i in seq)
-
-def strlen(val):
-    return len(str(val))
-
-
-
-#cs = load(clargs.filename)
-#pvs = [epics.PV(c) for c in cs]
-#data = []
-#for pv in pvs:
-#    c = pv.pvname
-#    connected = pv.wait_for_connection(clargs.timeout)
-
-#    if not connected:
-#        print(c, "didn't connect")
-#        data.append((connected, -1, -1, None))
-#        continue
-#    if pv.status != 0 or pv.severity != 0:
-#        print(c, message(pv.status, pv.severity))
-
-#    data.append((connected, pv.status, pv.severity, pv.value))
-
-#df = pd.DataFrame(data, index=cs, columns=["connected", "status", "severity", "value"])
-
-#print(df)
-#print(df.dtypes)
-
-
-
-
-
-
-
-def v2a():
-    pvc = PVCollection.from_file(clargs.filename)
-
-    data = {
-        "connected": pvc.connected(),
-        "status":    pvc.status(),
-        "severity":  pvc.severity(),
-        "value":     pvc.value()
-    }
-
-    df = pd.DataFrame(data, index=pvc.chans)
-
-#    print(df)
-#    print(df.dtypes)
-
-
-
-
-
+COL_RESET = Fore.RESET
 
 
 
@@ -179,17 +56,20 @@ def get_data(pv):
     connected = pv.wait_for_connection(clargs.timeout)
 
     if not connected:
-        value = None
+        value = np.nan
         status = severity = -1
         msg = MSG_NOT_CONNECTED
+        col = COL_NOT_CONNECTED
     else:
-        value = pv.value #TODO: not needed if shot not ok
+        value = pv.value
         status = pv.status
         severity = pv.severity
         if status == 0 and severity == 0:
             msg = MSG_SUCCESS
+            col = COL_SUCCESS
         else:
             msg = message(status, severity)
+            col = COL_ALARM
 
     data = {
         "connected": connected,
@@ -198,44 +78,106 @@ def get_data(pv):
         "severity": severity
     }
 
-    if clargs.show:
+    if not clargs.silent:
+        msg = colored(col, msg)
         print(pv.pvname, msg)
-    return data#, msg
+    return data
+
+
+def colored(color, msg):
+    return color + str(msg) + COL_RESET
 
 
 
-
-
-def v3():
-    chans = load(clargs.filename)
-    pvs = (epics.PV(ch) for ch in chans) # putting PV constructors into threads has weird effects
+def run_check():
+    filename = clargs.filename
+    chans = load(filename)
+    pvs = (epics.PV(ch) for ch in chans) # putting PV constructors into ThreadPoolExecutor has weird effects
     data = parallel(get_data, pvs, chans)
+
     df = pd.DataFrame(data).T
-    return df
+    df = df.infer_objects() #TODO: why is this needed?
+#    print(df)
+#    print(df.dtypes)
+
+    connection_state = df["connected"]
+    if connection_state.all():
+        print(f"{SYM_GOOD} all connections OK")
+    else:
+        total = connection_state.index
+        good = total[connection_state]
+
+        ntotal = len(total)
+        ngood = len(good)
+
+        print(f"{SYM_BAD} only {ngood}/{ntotal} connections OK")
+
+
+    output = clargs.output
+    if not output:
+        return
+
+    timestamp = datetime.now()
+    meta = f"{filename} / {timestamp}"
+    store_csv(df, output, meta)
+
+
+def run_compare():
+    fn1, fn2 = clargs.filenames
+    df1 = load_csv(fn1)
+    df2 = load_csv(fn2)
+
+    if clargs.ignore_values:
+        df1.drop("value", axis="columns", inplace=True)
+        df2.drop("value", axis="columns", inplace=True)
+
+    def report_diff(x):
+        return "" if equal(*x) else " {} | {}".format(*x)
+
+    def equal(a, b):
+        return a == b or (np.isnan(a) and np.isnan(b))
+
+    df = pd.concat((df1, df2)) 
+    changes = df.groupby(level=0).agg(report_diff)
+
+    changes.replace("", np.nan, inplace=True)
+    changes.dropna(axis="columns", how="all", inplace=True)
+    changes.dropna(axis="index",   how="all", inplace=True)
+    changes.replace(np.nan, "", inplace=True)
+
+    if changes.empty:
+        print(f'{SYM_GOOD} "{fn1}" and "{fn2}" are identical')
+    else:
+        print(f'{SYM_BAD} "{fn1}" and "{fn2}" differ:')
+        print(changes)
 
 
 
+def store_csv(df, fname, meta):
+    fname = fix_file_ext(fname, "csv")
+    with open(fname, "w") as f:
+        f.write(f"# {meta}\n")
+        df.to_csv(f)
+
+def load_csv(fname):
+    fname = fix_file_ext(fname, "csv")
+    return pd.read_csv(fname, index_col=0, comment="#", float_precision="high")    
 
 
 
+def fix_file_ext(fn, ext):
+    if not ext.startswith("."):
+        ext = "." + ext
+    if not fn.endswith(ext):
+        fn += ext
+    return fn
 
 
-res = v3()
-print(res)
-#for m in res:
-#    print(m)
-
-
-
-
-
-
-
-
-
-
-
-
+if __name__ == "__main__":
+    if clargs.command == "check":
+        run_check()
+    elif clargs.command == "compare":
+        run_compare()
 
 
 
