@@ -1,0 +1,31 @@
+status = {
+    0:  "NO ALARM",
+    1:  "READ",
+    2:  "WRITE",
+    3:  "HIHI",
+    4:  "HIGH",
+    5:  "LOLO",
+    6:  "LOW",
+    7:  "STATE",
+    8:  "COS",
+    9:  "COMM",
+    10: "TIMEOUT",
+    11: "HW LIMIT",
+    12: "CALC",
+    13: "SCAN",
+    14: "LINK",
+    15: "SOFT",
+    16: "BAD SUB",
+    17: "UDF",
+    18: "DISABLE",
+    19: "SIMM",
+    20: "READ ACCESS",
+    21: "WRITE ACCESS"
+}
+
+severity = {
+    0: "NO ALARM",
+    1: "MINOR",
+    2: "MAJOR",
+    3: "INVALID"
+}
