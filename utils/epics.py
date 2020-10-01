@@ -8,9 +8,9 @@ from .consts import MSG_NOT_CONNECTED, MSG_SUCCESS
 
 class DataGetter:
 
-    def __init__(self, timeout, silent):
+    def __init__(self, timeout, quiet):
         self.timeout = timeout
-        self.silent = silent
+        self.quiet = quiet
 
     def __call__(self, pv):
         connected = pv.wait_for_connection(self.timeout)
@@ -38,7 +38,7 @@ class DataGetter:
             "severity": severity
         }
 
-        if not self.silent:
+        if not self.quiet:
             msg = colored(col, msg)
             print(pv.pvname, msg)
         return data

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./sani.py check data/test_chans_good.txt -s
+./sani.py check data/test_chans_good.txt -q
 echo
 ./sani.py check data/test_chans_bad.txt
 echo

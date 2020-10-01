@@ -23,7 +23,7 @@ def run_check(clargs):
     chans = load_config(filename)
     pvs = (epics.PV(ch) for ch in chans) # putting PV constructors into ThreadPoolExecutor has weird effects
 
-    get_data = DataGetter(clargs.timeout, clargs.silent)
+    get_data = DataGetter(clargs.timeout, clargs.quiet)
     data = parallel(get_data, pvs, chans)
 
     df = pd.DataFrame(data).T
