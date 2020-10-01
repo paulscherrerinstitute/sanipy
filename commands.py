@@ -4,8 +4,7 @@ import epics
 
 from utils.df import drop_col, compare_dfs, count_true
 from utils.epics import DataGetter
-from utils.execute import parallel
-#from utils.execute import serial as parallel
+from utils.execute import parallel, serial
 from utils.fileio import load_config, load_csv, store_csv
 from utils.printing import print_good, print_bad
 
@@ -24,7 +23,8 @@ def run_check(clargs):
     pvs = (epics.PV(ch) for ch in chans) # putting PV constructors into ThreadPoolExecutor has weird effects
 
     get_data = DataGetter(clargs.timeout, clargs.quiet)
-    data = parallel(get_data, pvs, chans)
+    run = serial if clargs.serial else parallel
+    data = run(get_data, pvs, chans)
 
     df = pd.DataFrame(data).T
     df = df.infer_objects() #TODO: why is this needed?

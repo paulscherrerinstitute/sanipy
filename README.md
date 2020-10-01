@@ -19,7 +19,9 @@ The `data` folder contains some channel lists and output files for testing.
 
 Reads a list of PV names from plain text file (comments starting with `#` are allowed, even recommended) and tests each channel for connection, alarm status and severity.
 
-For each channel, the result will be printed as soon as it arrived. Thus, the output is ordered by response time. There is a command-line switch to suppress the output (`-q`/`--quiet`) and to set the connection time out in seconds (`-t`/`--timeout`).
+By default, the connection tests are performed in parallel. For each channel, the result will be printed as soon as it arrived. Thus, the output is ordered by response time. For debugging purposes, the parallelization of the tests can be turned off (`-s`/`--serial`), in which case the output is printed in the order of the channels in the input file (note that in serial mode each broken channel has to time out before the next channel is tested, in which case the total execution time can become very long).
+
+There is a command-line switch to suppress the output (`-q`/`--quiet`) and to set the connection time out in seconds (`-t`/`--timeout`).
 
 The test result can be written to a comma-separated values (csv) file by giving a filename to the `-o`/`--output` switch (`.csv` is automatically appended to the filename if missing).
 

@@ -17,6 +17,7 @@ def handle_clargs():
     parser_check.add_argument("filename", help="name of input channel-list file")
     parser_check.add_argument("-o", "--output", help="output CSV file", default=None)
     parser_check.add_argument("-q", "--quiet", help="do not show each channel's answer", action="store_true")
+    parser_check.add_argument("-s", "--serial", help="do not run checks in parallel", action="store_true")
     parser_check.add_argument("-t", "--timeout", help="connection timeout in seconds", type=float, default=1)
 
     parser_compare = subparsers.add_parser("compare", help="compare two check results")
