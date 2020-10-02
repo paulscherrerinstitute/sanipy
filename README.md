@@ -1,10 +1,10 @@
 # sanipy
 
-sanipy is a command-line tool for epics connection testing.
+sanipy is a friendly command-line tool for epics connection testing.
 
-It has two commands ([check](#check) and [compare](#compare)) and a few option switches (described in `sani.py -h` and `sani.py COMMAND -h`).
+It has two commands ([check](#check) and [compare](#compare)), each with a few option switches (described `sanipy COMMAND -h`).
 
-The `data` folder contains some channel lists and output files for testing.
+The `data` folder contains some example channel lists and output files for testing.
 
 ## Requirements
 
@@ -12,9 +12,18 @@ The `data` folder contains some channel lists and output files for testing.
 - [pyepics](https://pyepics.github.io/pyepics/)
 - [colorama](https://pypi.org/project/colorama/)
 - [numpy](https://numpy.org/)
-- [pandas DataFrame](https://pandas.pydata.org/docs/reference/frame.html)
+- [pandas](https://pandas.pydata.org/)
+
+## Installation
+
+sanipy is available from the [PSI anaconda channel](https://anaconda.org/paulscherrerinstitute/sanipy):
+
+```bash
+conda install -c paulscherrerinstitute sanipy
+```
 
 ## Commands
+
 ### check
 
 Reads a list of PV names from plain text file (comments starting with `#` are allowed, even recommended) and tests each channel for connection, alarm status and severity.
@@ -26,11 +35,12 @@ There is a command-line switch to suppress the output (`-q`/`--quiet`) and to se
 The test result can be written to a comma-separated values (csv) file by giving a filename to the `-o`/`--output` switch (`.csv` is automatically appended to the filename if missing).
 
 #### example output
-`./sani.py check data/test_chans_good.txt`
+
+`sanipy check data/test_chans_good.txt`
 <br>
 <img src="docs/check_good.png" width="491">
 
-`./sani.py check data/test_chans_bad.txt`
+`sanipy check data/test_chans_bad.txt`
 <br>
 <img src="docs/check_bad.png" width="491">
 
@@ -44,11 +54,11 @@ Values are, on the one hand, likely to change between checks. However, this chan
 
 #### example output
 
-`./sani.py compare data/test1.csv data/test4 --ignore-values`
+`sanipy compare data/test1.csv data/test4 --ignore-values`
 <br>
 <img src="docs/compare_good.png" width="568">
 
-`./sani.py compare data/test1.csv data/test3`
+`sanipy compare data/test1.csv data/test3`
 <br>
 <img src="docs/compare_bad.png" width="658">
 
