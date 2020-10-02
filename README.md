@@ -22,6 +22,12 @@ sanipy is available from the [PSI anaconda channel](https://anaconda.org/paulsch
 conda install -c paulscherrerinstitute sanipy
 ```
 
+At PSI, it is already installed in the GFA Python 3.7 environment, which can be accessed via
+
+```bash
+source /opt/gfa/python 3.7
+```
+
 ## Commands
 
 ### check
