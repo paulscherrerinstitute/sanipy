@@ -2,7 +2,7 @@
 
 sanipy is a friendly command-line tool for epics connection testing.
 
-It has two commands ([check](#check) and [compare](#compare)), each with a few option switches (described `sanipy COMMAND -h`).
+It has two commands ([check](#check) and [compare](#compare)), each with a few option switches (described in `sanipy COMMAND -h`).
 
 The `data` folder contains some example channel lists and output files for testing.
 
