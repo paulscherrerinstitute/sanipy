@@ -2,7 +2,7 @@
 
 sanipy is a friendly command-line tool for epics connection testing.
 
-It has two commands ([check](#check) and [compare](#compare)), each with a few option switches (described in `sanipy COMMAND -h`).
+It has two commands ([check](#check), [compare](#compare) and [goto](#goto)), each with a few option switches (described in `sanipy COMMAND -h`).
 
 The `data` folder contains some example channel lists and output files for testing.
 
@@ -69,4 +69,8 @@ Values are, on the one hand, likely to change between checks. However, this chan
 <img src="docs/compare_bad.png" width="658">
 
 Entries that are identical in both files will not be shown. Differences will be printed as `LEFT | RIGHT`.
+
+### goto
+
+Reads a csv file produced via [check](#check), and puts each stored non-NaN values into the respective PV. The command-line switches work identically to their [check](#check) counterparts.
 
