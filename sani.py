@@ -28,7 +28,7 @@ def handle_clargs():
     parser_goto.add_argument("filename", help="name of input CSV file")
     parser_goto.add_argument("-q", "--quiet", help="do not show each channel's answer", action="store_true")
     parser_goto.add_argument("-s", "--serial", help="do not run checks in parallel", action="store_true")
-    parser_goto.add_argument("-t", "--timeout", help="connection timeout in seconds", type=float, default=1)
+    parser_goto.add_argument("-t", "--timeout", help="connection and put completion timeout in seconds", type=float, default=1)
 
     clargs = parser.parse_args()
 
