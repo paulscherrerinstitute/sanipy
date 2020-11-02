@@ -24,7 +24,7 @@ def run_check(clargs):
 
     get_data = DataGetter(clargs.timeout, clargs.quiet)
     run = serial if clargs.serial else parallel
-    data = run(get_data, pvs, chans)
+    data = run(get_data, pvs, names=chans)
 
     df = pd.DataFrame(data).T
     df = df.infer_objects() #TODO: why is this needed?
