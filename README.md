@@ -72,5 +72,5 @@ Entries that are identical in both files will not be shown. Differences will be 
 
 ### goto
 
-Reads a csv file produced via [check](#check), and puts each stored non-NaN values into the respective PV. The command-line switches work identically to their [check](#check) counterparts.
+Reads a csv file produced via [check](#check), and puts each stored non-NaN value into the respective PV. The command-line switches work identically to their [check](#check) counterparts.
 
