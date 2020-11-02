@@ -1,9 +1,10 @@
 from datetime import datetime
+import numpy as np
 import pandas as pd
 import epics
 
 from utils.df import drop_col, compare_dfs, count_true
-from utils.epics import DataGetter
+from utils.epics import DataGetter, DataPutter
 from utils.execute import parallel, serial
 from utils.fileio import load_config, load_csv, store_csv
 from utils.printing import print_good, print_bad
@@ -12,7 +13,8 @@ from utils.printing import print_good, print_bad
 def run(clargs):
     commands = {
         "check": run_check,
-        "compare": run_compare
+        "compare": run_compare,
+        "goto": run_goto
     }
     commands[clargs.command](clargs)
 
@@ -63,6 +65,30 @@ def run_compare(clargs):
     else:
         print_bad(f'"{fn1}" and "{fn2}" differ:')
         print(diff)
+
+
+def run_goto(clargs):
+    fn = clargs.filename
+    df = load_csv(fn)
+
+    df = df["value"]
+    df.dropna(inplace=True)
+
+    values = df.values
+    chans = df.index
+    pvs = (epics.PV(ch) for ch in chans)
+
+    put_data = DataPutter(clargs.timeout, clargs.quiet)
+    run = serial if clargs.serial else parallel
+    status = run(put_data, pvs, values)
+
+    status = np.array(status)
+    if status.all():
+        print_good("all puts successful")
+    else:
+        ntotal = len(status)
+        ngood = count_true(status)
+        print_bad(f"only {ngood}/{ntotal} puts successful")
 
 
 
