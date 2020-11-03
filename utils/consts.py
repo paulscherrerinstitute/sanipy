@@ -11,6 +11,7 @@ MSG_SUCCESS = "OK"
 
 SYM_GOOD = "👍"
 SYM_BAD = "💔"
+SYM_NOTHING = "😱"
 
 
 
