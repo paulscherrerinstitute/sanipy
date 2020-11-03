@@ -3,7 +3,7 @@ import pandas as pd
 
 
 def compare_dfs(df1, df2):
-    df = pd.concat((df1, df2)) 
+    df = pd.concat((df1, df2))
     diff = df.groupby(level=0).agg(report_diff)
     drop_empty(diff)
     return diff
