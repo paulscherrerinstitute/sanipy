@@ -7,7 +7,7 @@ from utils.df import drop_col, compare_dfs, count_true
 from utils.epics import DataGetter, DataPutter
 from utils.execute import parallel, serial
 from utils.fileio import load_config, load_csv, store_csv
-from utils.printing import print_good, print_bad, itemize
+from utils.printing import print_good, print_bad, print_outcome, itemize
 from utils.seq import is_empty
 
 
@@ -35,12 +35,7 @@ def run_check(clargs):
 #    print(df.dtypes)
 
     connected = df["connected"]
-    if connected.all():
-        print_good("all connections OK")
-    else:
-        ntotal = len(connected)
-        ngood = count_true(connected)
-        print_bad(f"only {ngood}/{ntotal} connections OK")
+    print_outcome(connected, "connections OK")
 
     output = clargs.output
     if not output:
@@ -104,12 +99,7 @@ def run_goto(clargs):
     status = run(put_data, pvs, values)
 
     status = np.array(status)
-    if status.all():
-        print_good("all puts successful")
-    else:
-        ntotal = len(status)
-        ngood = count_true(status)
-        print_bad(f"only {ngood}/{ntotal} puts successful")
+    print_outcome(status, "puts successful")
 
 
 
