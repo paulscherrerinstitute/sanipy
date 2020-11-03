@@ -8,6 +8,7 @@ from utils.epics import DataGetter, DataPutter
 from utils.execute import parallel, serial
 from utils.fileio import load_config, load_csv, store_csv
 from utils.printing import print_good, print_bad, itemize
+from utils.seq import is_empty
 
 
 def run(clargs):
@@ -76,7 +77,7 @@ def run_goto(clargs):
         if not clargs.quiet:
             all_names = df.index
             ignored = all_names[~which]
-            if ignored.size != 0:
+            if not is_empty(ignored):
                 print("ignored due to alarm state:")
                 print(itemize(ignored))
                 print()
@@ -88,7 +89,7 @@ def run_goto(clargs):
         which = df.notnull()
         all_names = df.index
         ignored = all_names[~which]
-        if ignored.size != 0:
+        if not is_empty(ignored):
             print("ignored due to NaN value:")
             print(itemize(ignored))
             print()
