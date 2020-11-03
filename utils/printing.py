@@ -1,4 +1,5 @@
 from .consts import SYM_NOTHING, SYM_GOOD, SYM_BAD
+from .df import count_true
 from .seq import is_empty
 
 
@@ -21,6 +22,14 @@ def print_good(*args, **kwargs):
 def print_bad(*args, **kwargs):
     return print(SYM_BAD, *args, **kwargs)
 
+
+def print_ignored(df, which, reason): #TODO: should df be the argument or df.index?
+    all_names = df.index
+    ignored = all_names[~which]
+    if not is_empty(ignored):
+        print(f"ignored due to {reason}:")
+        print(itemize(ignored))
+        print()
 
 def itemize(iterable, bullet="•"):
     if not bullet.endswith(" "):
