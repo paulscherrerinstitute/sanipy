@@ -3,7 +3,7 @@ import pandas as pd
 
 def load_csv(fname):
     fname = fix_file_ext(fname, "csv")
-    return pd.read_csv(fname, index_col=0, comment="#", float_precision="high")    
+    return pd.read_csv(fname, index_col=0, comment="#", float_precision="high")
 
 def store_csv(df, fname, meta=None):
     fname = fix_file_ext(fname, "csv")
