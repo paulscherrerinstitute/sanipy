@@ -71,8 +71,12 @@ def run_goto(clargs):
     fn = clargs.filename
     df = load_csv(fn)
 
+    if clargs.ignore_alarm:
+        which = (df["status"] == 0) & (df["severity"] == 0)
+        df = df.loc[which]
+
     df = df["value"]
-    df.dropna(inplace=True)
+    df.dropna(inplace=True) #TODO: can NaN be a valid value?
 
     values = df.values
     chans = df.index
