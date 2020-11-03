@@ -7,7 +7,7 @@ from utils.df import drop_col, compare_dfs, count_true
 from utils.epics import DataGetter, DataPutter
 from utils.execute import parallel, serial
 from utils.fileio import load_config, load_csv, store_csv
-from utils.printing import print_good, print_bad, print_outcome, itemize
+from utils.printing import print_good, print_bad, print_outcome, print_ignored
 from utils.seq import is_empty
 
 
@@ -70,24 +70,13 @@ def run_goto(clargs):
     if clargs.ignore_alarm:
         which = (df["status"] == 0) & (df["severity"] == 0)
         if not clargs.quiet:
-            all_names = df.index
-            ignored = all_names[~which]
-            if not is_empty(ignored):
-                print("ignored due to alarm state:")
-                print(itemize(ignored))
-                print()
+            print_ignored(df, which, "alarm state")
         df = df.loc[which]
 
     df = df["value"]
 
     if not clargs.quiet:
-        which = df.notnull()
-        all_names = df.index
-        ignored = all_names[~which]
-        if not is_empty(ignored):
-            print("ignored due to NaN value:")
-            print(itemize(ignored))
-            print()
+        print_ignored(df, df.notnull(), "NaN value")
     df.dropna(inplace=True) #TODO: can NaN be a valid value?
 
     values = df.values
