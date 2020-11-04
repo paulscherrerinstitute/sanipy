@@ -3,8 +3,8 @@
 
 def main():
     clargs = handle_clargs()
-    from commands import run
-    run(clargs)
+    from commands import run_command
+    run_command(clargs)
 
 
 def handle_clargs():

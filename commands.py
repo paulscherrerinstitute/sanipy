@@ -3,15 +3,14 @@ import numpy as np
 import pandas as pd
 import epics
 
-from utils.df import drop_col, compare_dfs, count_true
+from utils.df import drop_col, compare_dfs
 from utils.epics import DataGetter, DataPutter
 from utils.execute import parallel, serial
 from utils.fileio import load_config, load_csv, store_csv
 from utils.printing import print_good, print_bad, print_outcome, print_ignored
-from utils.seq import is_empty
 
 
-def run(clargs):
+def run_command(clargs):
     commands = {
         "check": run_check,
         "compare": run_compare,
