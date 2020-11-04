@@ -38,10 +38,4 @@ def drop_col(df, name):
     df.drop(name, axis="columns", inplace=True)
 
 
-def count_true(bdf):
-    good = bdf[bdf]
-    ngood = len(good)
-    return ngood
-
-
 
