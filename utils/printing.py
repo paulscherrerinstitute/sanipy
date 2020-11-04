@@ -1,6 +1,5 @@
 from .consts import SYM_NOTHING, SYM_GOOD, SYM_BAD
-from .df import count_true
-from .seq import is_empty
+from .seq import count_true, is_empty
 
 
 def print_outcome(state, units):
